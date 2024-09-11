@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders</title>
+</head>
+
+<body>
+    <canvas id="my_canvas" width="600" height="600"></canvas>
+
+    <script type="text/javascript">
+        const my_canvas = document.getElementById('my_canvas');
+        const ctx = my_canvas.getContext('2d');
+
+        var flag = 0;
+        var pressed = 0;
+
+        let y = 300;
+        let x = 300;
+
+        var points = 0;
+
+        var speed = 0;
+
+        var direction = "";
+
+        var walls = [];
+
+        var pause = false;
+
+        var imagen = new Image();
+        imagen.src = "dog.png";
+
+        const ding = new Audio('dog.mp3');
+
+        class Player {
+            constructor(x, y, w, h, c, s) {
+                this.x = x;
+                this.y = y;
+                this.w = w;
+                this.h = h;
+                this.c = c;
+                this.s = s;
+            }
+
+            hit(otro) {
+                if (this.x < otro.x + otro.w &&
+                    this.x + this.w > otro.x &&
+                    this.y < otro.y + otro.h &&
+                    this.y + this.h > otro.y) {
+
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        document.addEventListener("keydown", function (e) {
+            console.log(e)
+
+            switch (e.keyCode) {
+                case 37:
+                    direction = "left";
+                    break;
+                case 38:
+                    direction = "up";
+                    break;
+                case 39:
+                    direction = "right";
+                    break;
+                case 40:
+                    direction = "down";
+                    break;
+                case 32:
+                    direction = "space";
+                    pause = !pause;
+                    break;
+            }
+        })
+
+        function update() {
+            if (pause) {
+                switch (direction) {
+                    case "left":
+                        if (speed > 3) {
+                            player.x = player.x - 3 - speed;
+                        } else {
+                            player.x = player.x - 3;
+                        }
+                        if (player.x <= -40) {
+                            player.x = 630;
+                        }
+                        break;
+                    case "up":
+                        if (speed > 3) {
+                            player.y = player.y - 3 - speed;
+                        } else {
+                            player.y = player.y - 3;
+                        }
+                        if (player.y <= -40) {
+                            player.y = 630;
+                        }
+                        break;
+                    case "right":
+                        if (speed > 3) {
+                            player.x = player.x + 3 + speed;
+                        } else {
+                            player.x = player.x + 3;
+                        }
+                        if (player.x >= 600) {
+                            player.x = -40;
+                        }
+                        break;
+                    case "down":
+                        if (speed > 3) {
+                            player.y = player.y + 3 + speed;
+                        } else {
+                            player.y = player.y + 3;
+                        }
+                        if (player.y >= 600) {
+                            player.y = -40;
+                        }
+                        break;
+                }
+            }
+            if (player.hit(enemy)) {
+                enemy.x = Math.random() * 600;
+                enemy.y = Math.random() * 600;
+
+                points = points + 10;
+
+                
+            }
+            function muros(walls, i, arr) {
+                if (player.hit(walls)) {
+                    switch (direction) {
+                        case "left":
+                            player.x = player.x + 5;
+                            break;
+                        case "up":
+                            player.y = player.y + 10;
+                            break;
+                        case "right":
+                            player.x = player.x - 10;
+                            break;
+                        case "down":
+                            player.y = player.y - 10;
+                            break;
+                    }
+                }
+            }
+
+            walls.forEach(muros)
+        }
+
+        function pintar() {
+            ctx.fillStyle = "lightblue";
+            ctx.fillRect(0, 0, 600, 600);
+
+            ctx.drawImage(imagen, player.x, player.y, player.w, player.h)
+
+            ctx.fillStyle = enemy.c;
+            ctx.fillRect(enemy.x, enemy.y, enemy.w, enemy.h);
+            ctx.strokeRect(enemy.x, enemy.y, enemy.w, enemy.h);
+
+            function muros(walls, i, arr) {
+                ctx.fillStyle = walls.c;
+                ctx.fillRect(walls.x, walls.y, walls.w, walls.h);
+                ctx.strokeRect(walls.x, walls.y, walls.w, walls.h);
+            }
+
+            walls.forEach(muros)
+
+            ctx.font = "20px Verdana";
+            ctx.strokeText("Puntos: " + points, 450, 50);
+
+            if (!pause) {
+                ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+                ctx.fillRect(0, 0, 600, 600);
+
+                ctx.font = "40px Verdana";
+                ctx.strokeText("PAUSONA", 200, 200);
+            }
+
+            update();
+            requestAnimationFrame(pintar);
+        }
+
+        requestAnimationFrame(pintar);
+
+        var player = new Player(280, 280, 50, 50, "white", 10);
+        var enemy = new Player(280, 280, 20, 20, "red", 10);
+
+        walls.push(new Player(200, 400, 200, 20, "grey", 10));
+        walls.push(new Player(200, 100, 200, 20, "grey", 10));
+
+    </script>
+    <style>
+        canvas {
+            background-color: lightblue;
+        }
+    </style>
+</body>
+
+</html>
