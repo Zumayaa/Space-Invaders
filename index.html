@@ -13,6 +13,7 @@
     <script src="player.js"></script>
     <script src="enemy.js"></script>
     <script src="wall.js"></script>
+    <script src="bullet.js"></script>
     <script type="text/javascript">
         const my_canvas = document.getElementById('my_canvas');
         const ctx = my_canvas.getContext('2d');
@@ -28,6 +29,8 @@
 
         var points = 0;
 
+        var baluchaPrueba = 0;
+
         var speed = 0;
 
         var direction = "";
@@ -35,6 +38,9 @@
         var walls = [];
 
         var pause = false;
+
+        var posicionY = 0;
+        var posicionX = 0;
 
         var imagen = new Image();
         imagen.src = "dog.png";
@@ -53,13 +59,17 @@
                     break;
                 case 32:
                     direction = "space";
-                    pause = !pause;
+                    //pause = !pause;
+                    baluchaPrueba = 1;
+                    posicionY = player.y;
+                    posicionX = player.x;
                     break;
             }
         })
 
         function update() {
-            if (pause) {
+            //cuando pongas el pause de nuevo es pause aqui, sin !
+            if (!pause) {
                 switch (direction) {
                     case "left":
                         if (speed > 3) {
@@ -105,14 +115,14 @@
                         break;
                 }
             }
-            if (player.hit(enemy)) {
+
+            if (bala.hit(enemy)) {
                 enemy.x = Math.random() * 900;
                 enemy.y = Math.random() * 900;
 
                 points = points + 10;
-
-                
             }
+
             function muros(walls, i, arr) {
                 if (player.hit(walls)) {
                     switch (direction) {
@@ -145,6 +155,18 @@
             ctx.fillRect(enemy.x, enemy.y, enemy.w, enemy.h);
             ctx.strokeRect(enemy.x, enemy.y, enemy.w, enemy.h);
 
+            if(baluchaPrueba === 1){
+                ctx.fillStyle = bala.c;
+                ctx.fillRect(posicionX,posicionY,bala.w, bala.h);
+                ctx.strokeRect(posicionX,posicionY,bala.w, bala.h);
+
+                posicionY -=5;
+
+                if (posicionY < -bala.h) {
+                    baluchaPrueba = 0; 
+                }
+            }
+
             function muros(walls, i, arr) {
                 ctx.fillStyle = walls.c;
                 ctx.fillRect(walls.x, walls.y, walls.w, walls.h);
@@ -156,7 +178,8 @@
             ctx.font = "20px Verdana";
             ctx.strokeText("Puntos: " + points, 450, 50);
 
-            if (!pause) {
+            //cuando pongas el pause de nuevo es !pause
+            if (pause) {
                 ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
                 ctx.fillRect(0, 0, 900, 900);
 
@@ -170,8 +193,10 @@
 
         requestAnimationFrame(pintar);
 
+        var bala = new Bullet(0, 0, 10, 10, "red", 10)
+
         var player = new Player(450, 800, 50, 50, "white", 10);
-        var enemy = new Enemy(280, 280, 20, 20, "red", 10);
+        var enemy = new Enemy(450, 450, 200, 20, "red", 10);
 
         walls.push(new Wall(200, 400, 200, 20, "grey", 10));
         walls.push(new Wall(200, 100, 200, 20, "grey", 10));
