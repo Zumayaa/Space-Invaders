@@ -31,11 +31,14 @@
 
         var baluchaPrueba = 0;
 
+        var hit = 0;
+
         var speed = 0;
 
         var direction = "";
 
         var walls = [];
+        var enemies = [];
 
         var pause = false;
 
@@ -43,9 +46,9 @@
         var posicionX = 0;
 
         var imagen = new Image();
-        imagen.src = "dog.png";
+        imagen.src = "files/dog.png";
 
-        const ding = new Audio('dog.mp3');
+        const ding = new Audio('files/dog.mp3');
 
         document.addEventListener("keydown", function (e) {
             console.log(e)
@@ -124,10 +127,12 @@
                 if (posicionY < -bala.h) {
                     baluchaPrueba = 0; 
                 }
-        
-                if (bala.hit(enemy)) {
-                    enemy.x = Math.random() * 900; 
-                    enemy.y = Math.random() * 900;
+            }
+
+            function enemigos(enemies, j,array){
+                if (bala.hit(enemies)) {
+                    enemies.x = 1800; 
+                    enemies.y = 1800;
                     points += 10;
                     baluchaPrueba = 0;
                 }
@@ -150,9 +155,13 @@
                             break;
                     }
                 }
+                if (bala.hit(walls)) {
+                    baluchaPrueba = 0;
+                }
             }
 
             walls.forEach(muros)
+            enemies.forEach(enemigos)
         }
 
         function pintar() {
@@ -160,10 +169,10 @@
             ctx.fillRect(0, 0, 900, 900);
 
             ctx.drawImage(imagen, player.x, player.y, player.w, player.h)
-
-            ctx.fillStyle = enemy.c;
-            ctx.fillRect(enemy.x, enemy.y, enemy.w, enemy.h);
-            ctx.strokeRect(enemy.x, enemy.y, enemy.w, enemy.h);
+            
+            function enemigos(enemies, j, array) {
+                ctx.drawImage(imagen, enemies.x, enemies.y, enemies.w, enemies.h);
+            }
 
             if(baluchaPrueba === 1){
                 ctx.fillStyle = bala.c;
@@ -183,8 +192,9 @@
                 ctx.strokeRect(walls.x, walls.y, walls.w, walls.h);
             }
 
+            enemies.forEach(enemigos)
             walls.forEach(muros)
-
+        
             ctx.font = "20px Verdana";
             ctx.strokeText("Puntos: " + points, 450, 50);
 
@@ -206,10 +216,23 @@
         var bala = new Bullet(0, 0, 10, 10, "red", 10)
 
         var player = new Player(450, 800, 50, 50, "white", 10);
-        var enemy = new Enemy(450, 450, 200, 20, "red", 10);
 
-        walls.push(new Wall(200, 400, 200, 20, "grey", 10));
-        walls.push(new Wall(200, 100, 200, 20, "grey", 10));
+        let cols = 10;  
+        let rows = 5;   
+        let enemyWidth = 30; 
+        let enemyHeight = 30; 
+        let xSpacing = (900 - (cols * enemyWidth)) / (cols + 1); 
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                let xPos = xSpacing + col * (enemyWidth + xSpacing); 
+                let yPos = 50 + row * (enemyHeight + 50); 
+                enemies.push(new Enemy(xPos, yPos, enemyWidth, enemyHeight, "red", 10));
+            }
+        }
+
+        //walls.push(new Wall(200, 400, 200, 20, "grey", 10));
+        //walls.push(new Wall(200, 100, 200, 20, "grey", 10));
 
     </script>
     <style>
