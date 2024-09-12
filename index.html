@@ -30,8 +30,7 @@
         var points = 0;
 
         var baluchaPrueba = 0;
-
-        var hit = 0;
+        var ammo = 5;
 
         var speed = 0;
 
@@ -48,6 +47,13 @@
         var imagen = new Image();
         imagen.src = "files/dog.png";
 
+        var hueso = new Image();
+        hueso.src = "files/hueso.png";
+
+        const grass = new Image();
+        grass.src = 'files/grass.jpg';
+
+
         const ding = new Audio('files/dog.mp3');
 
         document.addEventListener("keydown", function (e) {
@@ -55,17 +61,24 @@
 
             switch (e.keyCode) {
                 case 37:
+                case 65:
                     direction = "left";
                     break;
                 case 39:
+                case 68:
                     direction = "right";
                     break;
                 case 32:
-                    direction = "space";
-                    //pause = !pause;
-                    baluchaPrueba = 1;
-                    posicionY = player.y;
-                    posicionX = player.x;
+                    if(baluchaPrueba === 1 || ammo === 0){
+                        console.log("no")
+                    }else{
+                        direction = "space";
+                        //pause = !pause;
+                        baluchaPrueba = 1;
+                        ammo -= 1;
+                        posicionY = player.y;
+                        posicionX = player.x;
+                    }
                     break;
             }
         })
@@ -165,7 +178,7 @@
         }
 
         function pintar() {
-            ctx.fillStyle = "lightblue";
+            ctx.fillStyle = "black";
             ctx.fillRect(0, 0, 900, 900);
 
             ctx.drawImage(imagen, player.x, player.y, player.w, player.h)
@@ -175,10 +188,7 @@
             }
 
             if(baluchaPrueba === 1){
-                ctx.fillStyle = bala.c;
-                ctx.fillRect(posicionX,posicionY,bala.w, bala.h);
-                ctx.strokeRect(posicionX,posicionY,bala.w, bala.h);
-
+                ctx.drawImage(hueso, bala.x, bala.y, bala.w, bala.h);
                 posicionY -=5;
 
                 if (posicionY < -bala.h) {
@@ -213,7 +223,7 @@
 
         requestAnimationFrame(pintar);
 
-        var bala = new Bullet(0, 0, 10, 10, "red", 10)
+        var bala = new Bullet(0, 0, 15, 15, "red", 10)
 
         var player = new Player(450, 800, 50, 50, "white", 10);
 
