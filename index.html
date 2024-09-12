@@ -116,11 +116,21 @@
                 }
             }
 
-            if (bala.hit(enemy)) {
-                enemy.x = Math.random() * 900;
-                enemy.y = Math.random() * 900;
-
-                points = points + 10;
+            if (baluchaPrueba === 1) {
+                posicionY -= 5; 
+                bala.x = posicionX; 
+                bala.y = posicionY; 
+        
+                if (posicionY < -bala.h) {
+                    baluchaPrueba = 0; 
+                }
+        
+                if (bala.hit(enemy)) {
+                    enemy.x = Math.random() * 900; 
+                    enemy.y = Math.random() * 900;
+                    points += 10;
+                    baluchaPrueba = 0;
+                }
             }
 
             function muros(walls, i, arr) {
