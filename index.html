@@ -39,6 +39,7 @@
         var walls = [];
         var enemies = [];
 
+        var iniciar = false;
         var pause = false;
 
         var posicionY = 0;
@@ -64,11 +65,8 @@
         
         var disparoPlayer = 0;
 
-        var hueso = new Image();
-        hueso.src = "files/hueso.png";
-
-        const grass = new Image();
-        grass.src = 'files/grass.jpg';
+        const menu = new Image();
+        menu.src = 'files/menu.png';
 
         const fondo = new Image();
         fondo.src = 'files/fondo.png';
@@ -93,7 +91,14 @@
         enemigosImgs[3].src = 'files/zombie/torrera.png';
         enemigosImgs[4].src = 'files/zombie/sentado.png';
 
-        const ding = new Audio('files/dog.mp3');
+        const soundtrack = new Audio('files/soundtrack.mp3');
+        soundtrack.play();
+
+        const shot = new Audio('files/shot.mp3');
+
+        const empty = new Audio('files/empty.mp3');
+
+        const dead = new Audio('files/ded.mp3');
 
         document.addEventListener("keydown", function (e) {
             console.log(e)
@@ -115,7 +120,7 @@
                     derechaPlayer = 0;
                     playerDisparo = 1;
                     if(baluchaPrueba === 1 || ammo === 0){
-                        console.log("no")
+                        empty.play()
                     }else{
                         direction = "space";
                         //pause = !pause;
@@ -124,6 +129,9 @@
                         posicionY = player.y;
                         posicionX = player.x;
                     }
+                    break;
+                case 70:
+                    iniciar = true;
                     break;
             }
         })
@@ -171,6 +179,8 @@
                     enemies.y = 1800;
                     points += 10;
                     baluchaPrueba = 0;
+
+                    dead.play();
                 }
             }
 
@@ -220,9 +230,13 @@
             if(baluchaPrueba === 1){
                 ctx.drawImage(balazo, bala.x, bala.y, bala.w, bala.h);
                 posicionY -=5;
+                shot.play();
 
                 if (posicionY < -bala.h) {
                     baluchaPrueba = 0; 
+
+                    posicionY = 900;
+                    posicionX = 900;
                 }
             }
 
@@ -235,6 +249,10 @@
             ctx.font = "20px Verdana";
             ctx.strokeText("Puntos: " + points, 450, 50);
 
+            if (!iniciar) {
+                ctx.drawImage(menu, 0, 0, my_canvas.width, my_canvas.height);
+            }
+        
             //cuando pongas el pause de nuevo es !pause
             if (pause) {
                 ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
@@ -272,7 +290,7 @@
             }
         }
         walls.push(new Wall(200, 700, 70, 30, "grey", 10));
-        walls.push(new Wall(200, 100, 200, 20, "grey", 10));
+        //walls.push(new Wall(200, 100, 200, 20, "grey", 10));
 
     </script>
     <style>
