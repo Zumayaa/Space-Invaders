@@ -24,13 +24,10 @@
         var flag = 0;
         var pressed = 0;
 
-        let y = 450;
-        let x = 450;
-
         var points = 0;
 
         var baluchaPrueba = 0;
-        var ammo = 25;
+        var ammo = 55;
 
         var speed = 0;
 
@@ -100,6 +97,10 @@
 
         const dead = new Audio('files/ded.mp3');
 
+        var pruebas = 0;
+
+        var avance = 0;
+
         document.addEventListener("keydown", function (e) {
             console.log(e)
 
@@ -125,6 +126,7 @@
                         direction = "space";
                         //pause = !pause;
                         baluchaPrueba = 1;
+                        avance = 1;
                         ammo -= 1;
                         posicionY = player.y;
                         posicionX = player.x;
@@ -132,6 +134,9 @@
                     break;
                 case 70:
                     iniciar = true;
+                    break;
+                case 80:
+                    pruebas = 1;
                     break;
             }
         })
@@ -234,9 +239,6 @@
 
                 if (posicionY < -bala.h) {
                     baluchaPrueba = 0; 
-
-                    posicionY = 900;
-                    posicionX = 900;
                 }
             }
 
@@ -252,6 +254,15 @@
             if (!iniciar) {
                 ctx.drawImage(menu, 0, 0, my_canvas.width, my_canvas.height);
             }
+
+            if (ammo === 54) {
+                ctx.drawImage(menu, 0, 0, my_canvas.width, my_canvas.height);
+                if(pruebas === 1){
+                    console.log("hola")
+                    pruebas = 0;
+                    update();
+                }
+            }
         
             //cuando pongas el pause de nuevo es !pause
             if (pause) {
@@ -260,6 +271,13 @@
 
                 ctx.font = "40px Verdana";
                 ctx.strokeText("PAUSONA", 900, 900);
+            }
+
+            if (avance === 1) {
+                enemies.forEach(enemy => {
+                    enemy.y += 5; 
+                });
+                avance = 0;
             }
 
             update();
@@ -289,7 +307,7 @@
                 enemies.push(new Enemy(xPos + xVariation, yPos + yVariation, enemyWidth, enemyHeight, "red", 10));
             }
         }
-        walls.push(new Wall(200, 700, 70, 30, "grey", 10));
+        //walls.push(new Wall(200, 700, 70, 30, "grey", 10));
         //walls.push(new Wall(200, 100, 200, 20, "grey", 10));
 
     </script>
