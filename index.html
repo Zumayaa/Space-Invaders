@@ -30,7 +30,7 @@
         var points = 0;
 
         var baluchaPrueba = 0;
-        var ammo = 5;
+        var ammo = 25;
 
         var speed = 0;
 
@@ -75,6 +75,9 @@
 
         const fondo2 = new Image();
         fondo2.src = 'files/prueba.jpg';
+
+        const carroMuro = new Image();
+        carroMuro.src = 'files/walls/barrera1.png';
 
         let enemigosImgs = [
             new Image(),
@@ -138,18 +141,7 @@
                         if (player.x <= -40) {
                             player.x = 900;
                         }
-                        break;
-                    //borrar en caso de 
-                    case "up":
-                        if (speed > 3) {
-                            player.y = player.y - 3 - speed;
-                        } else {
-                            player.y = player.y - 3;
-                        }
-                        if (player.y <= -40) {
-                            player.y = 630;
-                        }
-                        break;
+                    break;
                     case "right":
                         if (speed > 3) {
                             player.x = player.x + 3 + speed;
@@ -159,18 +151,7 @@
                         if (player.x >= 900) {
                             player.x = -40;
                         }
-                        break;
-                    //borrar en caso de 
-                    case "down":
-                        if (speed > 3) {
-                            player.y = player.y + 3 + speed;
-                        } else {
-                            player.y = player.y + 3;
-                        }
-                        if (player.y >= 600) {
-                            player.y = -40;
-                        }
-                        break;
+                    break;
                 }
             }
 
@@ -246,9 +227,7 @@
             }
 
             function muros(walls, i, arr) {
-                ctx.fillStyle = walls.c;
-                ctx.fillRect(walls.x, walls.y, walls.w, walls.h);
-                ctx.strokeRect(walls.x, walls.y, walls.w, walls.h);
+                ctx.drawImage(carroMuro, walls.x, walls.y, walls.w, walls.h);
             }
 
             walls.forEach(muros)
@@ -284,22 +263,25 @@
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
                 let xPos = xSpacing + col * (enemyWidth + xSpacing); 
-                let yPos = 50 + row * (enemyHeight + 50); 
-                enemies.push(new Enemy(xPos, yPos, enemyWidth, enemyHeight, "red", 10));
+                let yPos = 50 + row * (enemyHeight + 50);
+        
+                let xVariation = (Math.random() - 0.5) * 20; 
+                let yVariation = (Math.random() - 0.5) * 20; 
+        
+                enemies.push(new Enemy(xPos + xVariation, yPos + yVariation, enemyWidth, enemyHeight, "red", 10));
             }
         }
-
-        //walls.push(new Wall(200, 400, 200, 20, "grey", 10));
-        //walls.push(new Wall(200, 100, 200, 20, "grey", 10));
+        walls.push(new Wall(200, 700, 70, 30, "grey", 10));
+        walls.push(new Wall(200, 100, 200, 20, "grey", 10));
 
     </script>
     <style>
         canvas {
-            background-color: lightblue;
+            box-shadow: 30px 15px 80px black;
         }
         body {
             background-image: url("files/fondo.png");
-          }
+        }
     </style>
 </body>
 
