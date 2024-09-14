@@ -44,8 +44,25 @@
         var posicionY = 0;
         var posicionX = 0;
 
-        var imagen = new Image();
-        imagen.src = "files/dog.png";
+        var derechaPlayer = 0;
+        var playerDerecha = new Image();
+        playerDerecha.src = "files/player/player_Derecha.png";
+
+        var izquierdaPlayer = 0;
+        var playerIzquierda = new Image();
+        playerIzquierda.src = "files/player/player_Izquierda.png";
+
+        var playerParado = new Image();
+        playerParado.src = "files/player/player_Parado.png";
+
+        var playerDisparo = 0;
+        var playerDisparando = new Image();
+        playerDisparando.src = "files/player/player_Disparando.png";
+
+        var balazo = new Image();
+        balazo.src = "files/bala/bala.png";
+        
+        var disparoPlayer = 0;
 
         var hueso = new Image();
         hueso.src = "files/hueso.png";
@@ -53,6 +70,25 @@
         const grass = new Image();
         grass.src = 'files/grass.jpg';
 
+        const fondo = new Image();
+        fondo.src = 'files/fondo.png';
+
+        const fondo2 = new Image();
+        fondo2.src = 'files/prueba.jpg';
+
+        let enemigosImgs = [
+            new Image(),
+            new Image(),
+            new Image(),
+            new Image(),
+            new Image(),
+        ];
+
+        enemigosImgs[0].src = 'files/zombie/gordo.png';
+        enemigosImgs[1].src = 'files/zombie/flaco.png'; 
+        enemigosImgs[2].src = 'files/zombie/morro.png';
+        enemigosImgs[3].src = 'files/zombie/torrera.png';
+        enemigosImgs[4].src = 'files/zombie/sentado.png';
 
         const ding = new Audio('files/dog.mp3');
 
@@ -63,12 +99,18 @@
                 case 37:
                 case 65:
                     direction = "left";
+                    izquierdaPlayer = 1;
                     break;
                 case 39:
                 case 68:
                     direction = "right";
+                    izquierdaPlayer = 0;
+                    derechaPlayer = 1;
                     break;
                 case 32:
+                    izquierdaPlayer = 0;
+                    derechaPlayer = 0;
+                    playerDisparo = 1;
                     if(baluchaPrueba === 1 || ammo === 0){
                         console.log("no")
                     }else{
@@ -178,17 +220,24 @@
         }
 
         function pintar() {
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, 900, 900);
+            ctx.drawImage(fondo2, 0, 0, my_canvas.width, my_canvas.height);
 
-            ctx.drawImage(imagen, player.x, player.y, player.w, player.h)
-            
-            function enemigos(enemies, j, array) {
-                ctx.drawImage(imagen, enemies.x, enemies.y, enemies.w, enemies.h);
+            ctx.drawImage(playerParado, player.x, player.y, player.w, player.h)
+
+            if(izquierdaPlayer === 1){
+                ctx.drawImage(playerIzquierda, player.x, player.y, player.w, player.h)
+            } else if(derechaPlayer === 1){
+                ctx.drawImage(playerDerecha, player.x, player.y, player.w, player.h)
+            }else if(playerDisparo === 1){
+                ctx.drawImage(playerDisparando, player.x, player.y, player.w, player.h)
             }
+            
+            enemies.forEach(enemy => {
+                enemy.draw(ctx);
+            });
 
             if(baluchaPrueba === 1){
-                ctx.drawImage(hueso, bala.x, bala.y, bala.w, bala.h);
+                ctx.drawImage(balazo, bala.x, bala.y, bala.w, bala.h);
                 posicionY -=5;
 
                 if (posicionY < -bala.h) {
@@ -202,7 +251,6 @@
                 ctx.strokeRect(walls.x, walls.y, walls.w, walls.h);
             }
 
-            enemies.forEach(enemigos)
             walls.forEach(muros)
         
             ctx.font = "20px Verdana";
@@ -225,12 +273,12 @@
 
         var bala = new Bullet(0, 0, 15, 15, "red", 10)
 
-        var player = new Player(450, 800, 50, 50, "white", 10);
+        var player = new Player(450, 800, 30, 30, "white", 10);
 
         let cols = 10;  
         let rows = 5;   
-        let enemyWidth = 30; 
-        let enemyHeight = 30; 
+        let enemyWidth = 20; 
+        let enemyHeight = 20; 
         let xSpacing = (900 - (cols * enemyWidth)) / (cols + 1); 
 
         for (let row = 0; row < rows; row++) {
@@ -249,6 +297,9 @@
         canvas {
             background-color: lightblue;
         }
+        body {
+            background-image: url("files/fondo.png");
+          }
     </style>
 </body>
 

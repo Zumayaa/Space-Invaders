@@ -6,6 +6,9 @@ class Enemy {
         this.h = h;
         this.c = c;
         this.s = s;
+
+        let randomIndex = Math.floor(Math.random() * enemigosImgs.length);
+        this.img = enemigosImgs[randomIndex];
     }
 
     hit(otro) {
@@ -13,9 +16,12 @@ class Enemy {
             this.x + this.w > otro.x &&
             this.y < otro.y + otro.h &&
             this.y + this.h > otro.y) {
-
             return true;
         }
         return false;
+    }
+
+    draw(ctx) {
+        ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
     }
 }
