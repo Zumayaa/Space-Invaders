@@ -74,6 +74,9 @@
         const carroMuro = new Image();
         carroMuro.src = 'files/walls/barrera1.png';
 
+        const pausa = new Image();
+        pausa.src = 'files/PAUSA.png';
+
         let enemigosImgs = [
             new Image(),
             new Image(),
@@ -124,7 +127,6 @@
                         empty.play()
                     }else{
                         direction = "space";
-                        //pause = !pause;
                         baluchaPrueba = 1;
                         avance = 1;
                         ammo -= 1;
@@ -132,6 +134,8 @@
                         posicionX = player.x;
                     }
                     break;
+                case 69:
+                    pause = !pause;
                 case 70:
                     iniciar = true;
                     break;
@@ -254,23 +258,10 @@
             if (!iniciar) {
                 ctx.drawImage(menu, 0, 0, my_canvas.width, my_canvas.height);
             }
-
-            if (ammo === 54) {
-                ctx.drawImage(menu, 0, 0, my_canvas.width, my_canvas.height);
-                if(pruebas === 1){
-                    console.log("hola")
-                    pruebas = 0;
-                    update();
-                }
-            }
         
             //cuando pongas el pause de nuevo es !pause
             if (pause) {
-                ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-                ctx.fillRect(0, 0, 900, 900);
-
-                ctx.font = "40px Verdana";
-                ctx.strokeText("PAUSONA", 900, 900);
+                ctx.drawImage(pausa, 0, 0, my_canvas.width, my_canvas.height);
             }
 
             if (avance === 1) {
@@ -288,7 +279,7 @@
 
         var bala = new Bullet(0, 0, 15, 15, "red", 10)
 
-        var player = new Player(450, 800, 30, 30, "white", 10);
+        var player = new Player(450, 800, 20, 20, "white", 10);
 
         let cols = 10;  
         let rows = 5;   
