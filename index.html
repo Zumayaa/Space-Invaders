@@ -62,6 +62,9 @@
         
         var disparoPlayer = 0;
 
+        let timer = 0;
+        let timerIniciado = false;
+
         const menu = new Image();
         menu.src = 'files/menu.png';
 
@@ -219,23 +222,29 @@
             enemies.forEach(enemigos)
         }
 
-        function pintar() {
-            ctx.drawImage(fondo2, 0, 0, my_canvas.width, my_canvas.height);
-
-            ctx.drawImage(playerParado, player.x, player.y, player.w, player.h)
-
-            if(izquierdaPlayer === 1){
-                ctx.drawImage(playerIzquierda, player.x, player.y, player.w, player.h)
-            } else if(derechaPlayer === 1){
-                ctx.drawImage(playerDerecha, player.x, player.y, player.w, player.h)
-            }else if(playerDisparo === 1){
-                ctx.drawImage(playerDisparando, player.x, player.y, player.w, player.h)
+        function perder (){
+            if(enemies.y === 300){
+                console.log("hola")
             }
-            
-            enemies.forEach(enemy => {
-                enemy.draw(ctx);
-            });
+        }
 
+        function avanzarEnemigos(){
+            if (avance === 1) {
+                enemies.forEach(enemy => {
+                    enemy.y += 15; 
+                });
+                avance = 0;
+            }
+        }
+
+        function pausaJuego(){
+            if (pause) {
+                ctx.drawImage(pausa, 0, 0, my_canvas.width, my_canvas.height);
+                iniciarTimer.pause();
+            }
+        }
+
+        function balaMovimiento(){
             if(baluchaPrueba === 1){
                 ctx.drawImage(balazo, bala.x, bala.y, bala.w, bala.h);
                 posicionY -=5;
@@ -245,32 +254,68 @@
                     baluchaPrueba = 0; 
                 }
             }
+        }
+
+        function movimientoJugador(){
+            if(izquierdaPlayer === 1){
+                ctx.drawImage(playerIzquierda, player.x, player.y, player.w, player.h)
+            } else if(derechaPlayer === 1){
+                ctx.drawImage(playerDerecha, player.x, player.y, player.w, player.h)
+            }else if(playerDisparo === 1){
+                ctx.drawImage(playerDisparando, player.x, player.y, player.w, player.h)
+            }
+        }
+
+        function marcadores(){
+            ctx.font = "30px Courier New Bold";
+            ctx.fillStyle = "white";
+            ctx.fillText("Balas: " + ammo, 100, 800);
+
+            ctx.font = "30px Courier New Bold";
+            ctx.fillText("Tiempo: " + timer, 700, 800);
+        }
+
+        function iniciarTimer() {
+            setInterval(tiempo, 1000);
+        }
+
+        function tiempo(){
+            timer++;
+        }
+
+        function inicioJuego() {
+            if (!iniciar) {
+                ctx.drawImage(menu, 0, 0, my_canvas.width, my_canvas.height);
+            } else {
+                marcadores();
+                if (!timerIniciado) { 
+                    iniciarTimer();
+                    timerIniciado = true; 
+                }
+            }
+        }
+
+        function pintar() {
+            ctx.drawImage(fondo2, 0, 0, my_canvas.width, my_canvas.height);
+
+            ctx.drawImage(playerParado, player.x, player.y, player.w, player.h)
+            
+            enemies.forEach(enemy => {
+                enemy.draw(ctx);
+            });
 
             function muros(walls, i, arr) {
                 ctx.drawImage(carroMuro, walls.x, walls.y, walls.w, walls.h);
             }
 
             walls.forEach(muros)
-        
-            ctx.font = "20px Verdana";
-            ctx.strokeText("Puntos: " + points, 450, 50);
 
-            if (!iniciar) {
-                ctx.drawImage(menu, 0, 0, my_canvas.width, my_canvas.height);
-            }
-        
-            //cuando pongas el pause de nuevo es !pause
-            if (pause) {
-                ctx.drawImage(pausa, 0, 0, my_canvas.width, my_canvas.height);
-            }
+            inicioJuego();
 
-            if (avance === 1) {
-                enemies.forEach(enemy => {
-                    enemy.y += 5; 
-                });
-                avance = 0;
-            }
-
+            movimientoJugador();
+            balaMovimiento();
+            pausaJuego();
+            avanzarEnemigos();
             update();
             requestAnimationFrame(pintar);
         }
@@ -308,6 +353,9 @@
         }
         body {
             background-image: url("files/fondo.png");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center top;
         }
     </style>
 </body>
