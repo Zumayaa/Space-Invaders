@@ -114,22 +114,16 @@
                 case 37:
                 case 65:
                     direction = "left";
-                    izquierdaPlayer = 1;
                     break;
                 case 39:
                 case 68:
                     direction = "right";
-                    izquierdaPlayer = 0;
-                    derechaPlayer = 1;
                     break;
                 case 32:
-                    izquierdaPlayer = 0;
-                    derechaPlayer = 0;
-                    playerDisparo = 1;
+                    direction = "space";
                     if(baluchaPrueba === 1 || ammo === 0){
                         empty.play()
                     }else{
-                        direction = "space";
                         baluchaPrueba = 1;
                         avance = 1;
                         ammo -= 1;
@@ -139,12 +133,13 @@
                     break;
                 case 69:
                     pause = !pause;
+                break;
                 case 70:
                     iniciar = true;
-                    break;
+                break;
                 case 80:
                     pruebas = 1;
-                    break;
+                break;
             }
         })
 
@@ -153,24 +148,24 @@
             if (!pause) {
                 switch (direction) {
                     case "left":
-                        if (speed > 3) {
-                            player.x = player.x - 3 - speed;
-                        } else {
-                            player.x = player.x - 3;
-                        }
+                        player.x = player.x - 3;
+                        izquierdaPlayer = 1;
                         if (player.x <= -40) {
                             player.x = 900;
                         }
                     break;
                     case "right":
-                        if (speed > 3) {
-                            player.x = player.x + 3 + speed;
-                        } else {
-                            player.x = player.x + 3;
-                        }
+                        player.x = player.x + 3;
+                        izquierdaPlayer = 0;
+                        derechaPlayer = 1;
                         if (player.x >= 900) {
                             player.x = -40;
                         }
+                    break;
+                    case "space":
+                        izquierdaPlayer = 0;
+                        derechaPlayer = 0;
+                        playerDisparo = 1;
                     break;
                 }
             }
@@ -240,7 +235,6 @@
         function pausaJuego(){
             if (pause) {
                 ctx.drawImage(pausa, 0, 0, my_canvas.width, my_canvas.height);
-                iniciarTimer.pause();
             }
         }
 
@@ -341,6 +335,13 @@
                 let yVariation = (Math.random() - 0.5) * 20; 
         
                 enemies.push(new Enemy(xPos + xVariation, yPos + yVariation, enemyWidth, enemyHeight, "red", 10));
+            }
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+            if (enemies[i].y === 300) {
+                console.log("hola");
+                break; // Detiene el bucle después de encontrar el primer enemigo con y === 400
             }
         }
         //walls.push(new Wall(200, 700, 70, 30, "grey", 10));
