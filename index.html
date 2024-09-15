@@ -133,6 +133,8 @@
 
         var pruebas = 0;
 
+        var sePuede = 0;
+
         var avance = 0;
 
         document.addEventListener("keydown", function (e) {
@@ -176,7 +178,7 @@
                 case 70:
                     iniciar = true;
                 break;
-                case 80:
+                case 82:
                     pruebas = 1;
                 break;
             }
@@ -306,12 +308,17 @@
                 ctx.drawImage(ganaste, 0, 0, my_canvas.width, my_canvas.height);
         
                 cancelAnimationFrame(pintar);
+
+                sePuede = 1;
         
-                document.addEventListener("keydown", function (e) {
-                    if (e.key === 'r' || e.key === 'R') {
-                        reiniciarJuego();
-                    }
-                });
+                if(sePuede === 1){
+                    document.addEventListener("keydown", function (e) {
+                        if ((e.key === 'r' || e.key === 'R') && sePuede === 1) {
+                            sePuede = 0;
+                            reiniciarJuego();
+                        }
+                    });
+                }
             }
 
             soundtrack.pause();
@@ -323,12 +330,17 @@
                 ctx.drawImage(imgPerder, 0, 0, my_canvas.width, my_canvas.height);
         
                 cancelAnimationFrame(pintar);
+
+                sePuede = 1;
         
-                document.addEventListener("keydown", function (e) {
-                    if (e.key === 'r' || e.key === 'R') {
-                        reiniciarJuego();
-                    }
-                });
+                if(sePuede === 1){
+                    document.addEventListener("keydown", function (e) {
+                        if ((e.key === 'r' || e.key === 'R') && sePuede === 1) {
+                            sePuede = 0;
+                            reiniciarJuego();
+                        }
+                    });
+                }
             }
 
             soundtrack.pause();
@@ -337,6 +349,7 @@
 
         function reiniciarJuego() {
             enemigosMuertos = 0;
+            console.log(enemigosMuertos)
             player.x = 450;
             player.y = 800;
             points = 0;
@@ -347,6 +360,7 @@
             walls = [];
             perder = [];
             timer = 0;
+            sePuede = 0;
 
             pintarObjetos();
         }
