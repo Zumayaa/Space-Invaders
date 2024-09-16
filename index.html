@@ -254,7 +254,7 @@
 
             function enemigoHardy(enemigoHard, k, arra) {
                 if (bala.hit(enemigoHard) && !enemigoHard.herido) {
-                    enemigoHard.herido = true;  // Evita que se incremente varias veces en un turno
+                    enemigoHard.herido = true; 
                     baluchaPrueba = 0;
             
                     vidaEnemigoFuerte += 1;
@@ -304,6 +304,11 @@
                         perdiste = 1;
                     }
                 });
+                enemigoFuerte.forEach(enemigoHard => {
+                    if(enemigoHard.hit(murosLost)){
+                        perdiste = 1;
+                    }
+                })
             }
 
             walls.forEach(muros)
@@ -393,6 +398,7 @@
             enemies = [];
             walls = [];
             perder = [];
+            enemigoFuerte = [];
             timer = 0;
             sePuede = 0;
             gameOver = false;
@@ -407,7 +413,7 @@
                     enemy.y += 10; 
                 });
                 enemigoFuerte.forEach(enemigoHard => {
-                    enemigoHard.y += 10;  // Utiliza enemigoHard para modificar la propiedad y
+                    enemigoHard.y += 10;
                 });
                 avance = 0;
             }
