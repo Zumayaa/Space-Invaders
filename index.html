@@ -62,6 +62,8 @@
         var posicionY = 0;
         var posicionX = 0;
 
+        var vidaEnemigoFuerte = 0;
+
         var derechaPlayer = 0;
         var playerDerecha = new Image();
         playerDerecha.src = "files/player/player_Derecha.png";
@@ -251,14 +253,26 @@
             }
 
             function enemigoHardy(enemigoHard, k, arra) {
-                if (bala.hit(enemigoHard)) {
-                    enemigoHard.x = 1800; 
-                    enemigoHard.y = 1800;
-                    points += 10;
+                if (bala.hit(enemigoHard) && !enemigoHard.herido) {
+                    enemigoHard.herido = true;  // Evita que se incremente varias veces en un turno
                     baluchaPrueba = 0;
             
+                    vidaEnemigoFuerte += 1;
+            
+                    console.log(vidaEnemigoFuerte)
+            
+                    if(vidaEnemigoFuerte === 3){
+                        enemigoHard.x = 1800; 
+                        enemigoHard.y = 1800;
+                        points += 10;
+                    }
+            
+                    dead.play();
+                
                     posicionX = player.x;
                     posicionY = player.y;
+            
+                    setTimeout(() => enemigoHard.herido = false, 1000);
                 }
             }
 
@@ -392,7 +406,9 @@
                 enemies.forEach(enemy => {
                     enemy.y += 10; 
                 });
-                enemigoFuerte.y += 10;
+                enemigoFuerte.forEach(enemigoHard => {
+                    enemigoHard.y += 10;  // Utiliza enemigoHard para modificar la propiedad y
+                });
                 avance = 0;
             }
         }
