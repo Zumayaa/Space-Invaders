@@ -133,6 +133,9 @@
 
         var pruebas = 0;
 
+        var gameOver = false;
+        var gameWin = false;
+
         var sePuede = 0;
 
         var avance = 0;
@@ -186,7 +189,7 @@
 
         function update() {
             //cuando pongas el pause de nuevo es pause aqui, sin !
-            if (pause || iniciar) {
+            if (pause || iniciar || !gameOver) {
                 switch (direction) {
                     case "left":
                         player.x = player.x - 3;
@@ -305,11 +308,13 @@
 
         function jugadorGano(){
             if(enemigosMuertos === 2){
-                ctx.drawImage(ganaste, 0, 0, my_canvas.width, my_canvas.height);
-        
                 cancelAnimationFrame(pintar);
 
                 sePuede = 1;
+                gameWin = true;
+
+                soundtrack.pause();
+                soundtrack.currentTime = 0;
         
                 if(sePuede === 1){
                     document.addEventListener("keydown", function (e) {
@@ -320,18 +325,18 @@
                     });
                 }
             }
-
-            soundtrack.pause();
-            soundtrack.currentTime = 0;
         }
         
         function jugadorPerdio(){
             if (perdiste > 0 || ammo === 0) {
-                ctx.drawImage(imgPerder, 0, 0, my_canvas.width, my_canvas.height);
         
                 cancelAnimationFrame(pintar);
 
                 sePuede = 1;
+                gameOver = true;
+
+                soundtrack.pause();
+                soundtrack.currentTime = 0;
         
                 if(sePuede === 1){
                     document.addEventListener("keydown", function (e) {
@@ -342,9 +347,6 @@
                     });
                 }
             }
-
-            soundtrack.pause();
-            soundtrack.currentTime = 0;
         }
 
         function reiniciarJuego() {
@@ -361,6 +363,8 @@
             perder = [];
             timer = 0;
             sePuede = 0;
+            gameOver = false;
+            gameWin = false;
 
             pintarObjetos();
         }
@@ -449,35 +453,41 @@
         function pintar() {
             ctx.clearRect(0, 0, my_canvas.width, my_canvas.height);
             ctx.drawImage(fondo2, 0, 0, my_canvas.width, my_canvas.height);
-
-            ctx.drawImage(playerParado, player.x, player.y, player.w, player.h)
-            
-            enemies.forEach(enemy => {
-                enemy.draw(ctx);
-            });
-
-            function muros(walls, i, arr) {
-                ctx.drawImage(carroMuro, walls.x, walls.y, walls.w, walls.h);
+        
+            if (pause) {
+                ctx.drawImage(pausa, 0, 0, my_canvas.width, my_canvas.height);
+            } else if(gameOver){
+                ctx.drawImage(imgPerder, 0, 0, my_canvas.width, my_canvas.height);
+            }else if(gameWin){
+                ctx.drawImage(ganaste, 0, 0, my_canvas.width, my_canvas.height);
+            }else{
+                // Solo actualiza y dibuja otros elementos si no está en pausa
+                enemies.forEach(enemy => {
+                    enemy.draw(ctx);
+                });
+        
+                function muros(walls, i, arr) {
+                    ctx.drawImage(carroMuro, walls.x, walls.y, walls.w, walls.h);
+                }
+        
+                function murosPerder(murosLost, i, arr) {
+                    ctx.drawImage(barraPerder, murosLost.x, murosLost.y, murosLost.w, murosLost.h);
+                }
+        
+                perder.forEach(murosPerder)
+                walls.forEach(muros)
+        
+                inicioJuego();
+                jugadorGano();
+                jugadorPerdio();
+                movimientoJugador();
+                balaMovimiento();
+                avanzarEnemigos();
+                update();
             }
-
-            function murosPerder(murosLost, i, arr) {
-                ctx.drawImage(barraPerder, murosLost.x, murosLost.y, murosLost.w, murosLost.h);
-            }
-
-            perder.forEach(murosPerder)
-            walls.forEach(muros)
-
-            inicioJuego();
-
-            jugadorGano();
-            jugadorPerdio();
-            movimientoJugador();
-            balaMovimiento();
-            pausaJuego();
-            avanzarEnemigos();
-            update();
             requestAnimationFrame(pintar);
         }
+        
 
         requestAnimationFrame(pintar);
 
