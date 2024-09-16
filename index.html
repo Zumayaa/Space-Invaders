@@ -27,6 +27,7 @@
     <script src="enemy.js"></script>
     <script src="wall.js"></script>
     <script src="bullet.js"></script>
+    <script src="enemyVariety.js"></script>
     <script type="text/javascript">
         const my_canvas = document.getElementById('my_canvas');
         const ctx = my_canvas.getContext('2d');
@@ -51,6 +52,7 @@
         var walls = [];
         var perder = [];
         var enemies = [];
+        var enemigoFuerte = [];
 
         var perdiste = 0;
 
@@ -98,6 +100,9 @@
 
         const barraPerder = new Image();
         barraPerder.src = 'files/walls/barraPerder.png';
+
+        const zombieFuerte = new Image();
+        zombieFuerte.src = 'files/zombie/strongZombie.png';
 
         const pausa = new Image();
         pausa.src = 'files/PAUSA.png';
@@ -245,6 +250,18 @@
                 }
             }
 
+            function enemigoHardy(enemigoHard, k, arra) {
+                if (bala.hit(enemigoHard)) {
+                    enemigoHard.x = 1800; 
+                    enemigoHard.y = 1800;
+                    points += 10;
+                    baluchaPrueba = 0;
+            
+                    posicionX = player.x;
+                    posicionY = player.y;
+                }
+            }
+
             function muros(walls, i, arr) {
                 if (player.hit(walls)) {
                     switch (direction) {
@@ -276,6 +293,7 @@
             }
 
             walls.forEach(muros)
+            enemigoFuerte.forEach(enemigoHardy)
             perder.forEach(murosPerder)
             enemies.forEach(enemigos)
         }
@@ -374,6 +392,7 @@
                 enemies.forEach(enemy => {
                     enemy.y += 10; 
                 });
+                enemigoFuerte.y += 10;
                 avance = 0;
             }
         }
@@ -467,11 +486,16 @@
                 function muros(walls, i, arr) {
                     ctx.drawImage(carroMuro, walls.x, walls.y, walls.w, walls.h);
                 }
+
+                function enemigoHardy(enemigoHard, k, arra) {
+                    ctx.drawImage(zombieFuerte, enemigoHard.x, enemigoHard.y, enemigoHard.w, enemigoHard.h);
+                }
         
                 function murosPerder(murosLost, i, arr) {
                     ctx.drawImage(barraPerder, murosLost.x, murosLost.y, murosLost.w, murosLost.h);
                 }
         
+                enemigoFuerte.forEach(enemigoHardy)
                 perder.forEach(murosPerder)
                 walls.forEach(muros)
         
@@ -513,6 +537,7 @@
                 }
             }
             //walls.push(new Wall(200, 400, 70, 30, "grey", 10));
+            enemigoFuerte.push(new EnemyVariety(200, 400, 35, 35, "grey", 10));
             perder.push(new Wall(0, 770, 900, 20, "grey", 10));
         }
         pintarObjetos();
