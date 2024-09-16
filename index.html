@@ -189,7 +189,7 @@
 
         function update() {
             //cuando pongas el pause de nuevo es pause aqui, sin !
-            if (pause || iniciar || !gameOver) {
+            if (iniciar && !pause && !gameOver) {
                 switch (direction) {
                     case "left":
                         player.x = player.x - 3;
@@ -307,7 +307,7 @@
         }
 
         function jugadorGano(){
-            if(enemigosMuertos === 2){
+            if(enemigosMuertos === 40){
                 cancelAnimationFrame(pintar);
 
                 sePuede = 1;
@@ -372,7 +372,7 @@
         function avanzarEnemigos(){
             if (avance === 1) {
                 enemies.forEach(enemy => {
-                    enemy.y += 15; 
+                    enemy.y += 10; 
                 });
                 avance = 0;
             }
@@ -380,7 +380,6 @@
 
         function pausaJuego(){
             if (pause) {
-                ctx.drawImage(pausa, 0, 0, my_canvas.width, my_canvas.height);
                 timerIspausa = true;
             }else{
                 timerIspausa = false;
@@ -461,7 +460,6 @@
             }else if(gameWin){
                 ctx.drawImage(ganaste, 0, 0, my_canvas.width, my_canvas.height);
             }else{
-                // Solo actualiza y dibuja otros elementos si no está en pausa
                 enemies.forEach(enemy => {
                     enemy.draw(ctx);
                 });
